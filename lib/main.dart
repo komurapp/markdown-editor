@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(),
-      routes: {
+      routes: <String, Widget Function(BuildContext)>{
         '/editor': (BuildContext context) => EditorPage(),
       },
     );
