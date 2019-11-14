@@ -1,62 +1,49 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+import './full_page.dart';
 
-class MyApp extends StatelessWidget {
+void main() => runApp(MarkdownEditorApp());
+
+class MarkdownEditorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Zefyr Editor',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.cyan,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: HomePage(),
+      routes: <String, WidgetBuilder>{'/fullPage': _buildFullPage},
     );
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  Widget _buildFullPage(BuildContext context) {
+    return FullPageEditorScreen();
   }
+}
 
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final NavigatorState nav = Navigator.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        elevation: 1.0,
+        backgroundColor: Colors.grey.shade200,
+        brightness: Brightness.light,
+        title: ZefyrLogo(),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      body: Column(
+        children: <Widget>[
+          Expanded(child: Container()),
+          FlatButton(
+            onPressed: () => nav.pushNamed('/fullPage'),
+            child: const Text('Full page editor'),
+            color: Colors.lightBlue,
+            textColor: Colors.white,
+          ),
+          Expanded(child: Container()),
+        ],
       ),
     );
   }
