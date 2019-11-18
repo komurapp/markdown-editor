@@ -23,18 +23,6 @@
           "insert": "\n"
         },
         {
-          "insert": "​",
-          "attributes": {
-            "embed": {
-              "type": "image",
-              "source": "asset://assets/breeze.jpg"
-            }
-          }
-        },
-        {
-          "insert": "\n"
-        },
-        {
           "insert": "Photo by Hiroyuki Takeda.",
           "attributes": {
             "i": true

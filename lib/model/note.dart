@@ -34,4 +34,6 @@ class Note {
       date: DateTime.parse(map['date']),
     );
   }
+
+  static const String emptyText = '[{"insert":"\\n"}]';
 }

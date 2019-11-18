@@ -20,8 +20,9 @@ class ZefyrLogo extends StatelessWidget {
 }
 
 class FullPageEditorScreen extends StatefulWidget {
-  const FullPageEditorScreen(this.note);
+  const FullPageEditorScreen(this.note, this.openOnEditing);
   final Note note;
+  final bool openOnEditing;
 
   @override
   _FullPageEditorScreenState createState() => _FullPageEditorScreenState();
@@ -41,6 +42,10 @@ class _FullPageEditorScreenState extends State<FullPageEditorScreen> {
     _sub = _controller.document.changes.listen((NotusChange change) {
       print('${change.source}: ${change.change}');
     });
+    if (widget.openOnEditing) {
+      print('empty');
+      _startEditing();
+    }
   }
 
   @override
