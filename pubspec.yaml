@@ -26,6 +26,10 @@ dependencies:
   zefyr: ^0.8.0
   image_picker:
   intl: ^0.15.7
+  path_provider:
+  shared_preferences:
+  path:
+  simple_permissions: ^0.1.9
 
 dev_dependencies:
   flutter_test:

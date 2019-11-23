@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 
 import '../model/note.dart';
 
+import '../persistance/file_manager.dart';
+import '../route_observer.dart';
 import './full_page.dart';
 
 class NotesListPage extends StatefulWidget {
@@ -12,28 +14,54 @@ class NotesListPage extends StatefulWidget {
   _NotesListPageState createState() => _NotesListPageState();
 }
 
-class _NotesListPageState extends State<NotesListPage> {
+class _NotesListPageState extends State<NotesListPage> with RouteAware {
   List<Note> _notes = <Note>[];
   final DateFormat formatter = DateFormat('yyyy-MM-dd hh:mm:ss');
 
-  // @override
-  // void initState() {
-  //   print('>>>>>initState()<<<<<');
-  //   super.initState();
-  //   _loadNotes().then((dynamic onValue) {
-  //     setState(() {
-  //       _notes = onValue;
-  //     });
-  //   }).catchError(print);
-  //   print(_notes);
-  // }
+  @override
+  void initState() {
+    print('>>>>>initState()<<<<<');
+    super.initState();
+    _loadNotes().then((dynamic onValue) {
+      if (onValue.length == 0) {
+        _loadFakeNote().then((dynamic onValue) {
+          _notes = onValue;
+        });
+      } else {
+        setState(() {
+          _notes = onValue;
+        });
+      }
+    }).catchError(print);
+    print(_notes);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  Future<List<Note>> _loadFakeNote() async {
+    final String response =
+        await DefaultAssetBundle.of(context).loadString('assets/text.json');
+    final List<Note> notes = Note.allFromResponse(response);
+
+    return notes;
+  }
 
   Future<void> _loadNotes() async {
-    final String jsonResponse =
-        await DefaultAssetBundle.of(context).loadString('assets/text.json');
+    final FileManager fm = FileManager();
+    final List<Note> jsonResponse = await fm.getNotes();
 
     setState(() {
-      _notes = Note.allFromResponse(jsonResponse);
+      _notes = jsonResponse;
     });
   }
 
@@ -57,6 +85,22 @@ class _NotesListPageState extends State<NotesListPage> {
         builder: (BuildContext ctx) => FullPageEditorScreen(note, startEditing),
       ),
     );
+  }
+
+  // Called when the top route has been popped off, and the current route shows up.
+  @override
+  void didPopNext() {
+    _loadNotes().then((dynamic onValue) {
+      if (onValue.length == 0) {
+        _loadFakeNote().then((dynamic onValue) {
+          _notes = onValue;
+        }).catchError(print);
+      } else {
+        setState(() {
+          _notes = onValue;
+        });
+      }
+    }).catchError(print);
   }
 
   @override
@@ -91,6 +135,7 @@ class _NotesListPageState extends State<NotesListPage> {
 
   void _addNote() {
     final Note note = Note(
+      id: 1,
       title: '',
       text: Note.emptyText,
       date: DateTime.now(),

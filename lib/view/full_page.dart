@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:zefyr/zefyr.dart';
 
 import '../model/note.dart';
+import '../persistance/file_manager.dart';
 
 class ZefyrLogo extends StatelessWidget {
   @override
@@ -118,6 +119,15 @@ class _FullPageEditorScreenState extends State<FullPageEditorScreen> {
   }
 
   void _stopEditing() {
+    final FileManager fm = FileManager();
+    final String jsonValue = jsonEncode(_controller.document);
+    final Note noteCopy = widget.note;
+    noteCopy.text = jsonValue;
+    fm.writeNote(noteCopy).then((dynamic res) {
+      print('ok');
+      print(res);
+    });
+
     setState(() {
       _editing = false;
     });
